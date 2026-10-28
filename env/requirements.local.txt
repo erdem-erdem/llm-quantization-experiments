@@ -1,0 +1,19 @@
+# Windows smoke tier (Layer A): no vllm, no llmcompressor, no nvcc.
+torch
+transformers
+accelerate
+datasets
+huggingface_hub
+gguf
+numpy
+pandas
+scipy
+matplotlib
+datasketch
+safetensors
+pydantic
+pyyaml
+filelock
+pillow
+pytest
+lm-eval

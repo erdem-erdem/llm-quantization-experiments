@@ -1,0 +1,15 @@
+# Quant registry. kind: bf16 | llmc | gguf. bpw_hint is a rough prior for display only.
+quants:
+  bf16:   {kind: bf16, needs_calib: false, label_tr: "BF16",   marker: o}
+  fp8:    {kind: llmc, scheme: FP8_DYNAMIC, needs_calib: false, label_tr: "FP8",    marker: s}
+  gptq:   {kind: llmc, scheme: W4A16,      needs_calib: true,  label_tr: "GPTQ-W4", marker: ^}
+  rtn:    {kind: llmc, scheme: W4A16,      needs_calib: false, label_tr: "RTN-W4",  marker: x}   # E2 control only
+  q8_0:   {kind: gguf, gguf_type: q8_0,    needs_calib: false, label_tr: "Q8_0",    marker: s}
+  q4_k_m: {kind: gguf, gguf_type: q4_k_m,  needs_calib: true,  label_tr: "Q4_K_M",  marker: ^}
+  q3_k_m: {kind: gguf, gguf_type: q3_k_m,  needs_calib: true,  label_tr: "Q3_K_M",  marker: x}
+  q2_k:   {kind: gguf, gguf_type: q2_k,    needs_calib: true,  label_tr: "Q2_K",    marker: x}
+# E1 set (K-08)
+e1_quants: [fp8, gptq, q8_0, q4_k_m, q3_k_m, q2_k]
+gguf_quants: [q8_0, q4_k_m, q3_k_m, q2_k]
+# Quants that never carry a calibration (calib=none, seed=s0)
+no_calib: [bf16, fp8, rtn, q8_0]

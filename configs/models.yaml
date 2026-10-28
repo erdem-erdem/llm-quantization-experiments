@@ -1,0 +1,9 @@
+# Model registry. Order matters: it is the smallest → largest model order used everywhere.
+models:
+  q06: {hf: Qwen/Qwen3-0.6B,   label_tr: "0.6B"}
+  q17: {hf: Qwen/Qwen3-1.7B,   label_tr: "1.7B"}
+  q4:  {hf: Qwen/Qwen3-4B,     label_tr: "4B"}
+  q8:  {hf: Qwen/Qwen3-8B,     label_tr: "8B"}
+  q14: {hf: Qwen/Qwen3-14B,    label_tr: "14B"}
+  q32: {hf: Qwen/Qwen3-32B,    label_tr: "32B"}
+tied: [q06, q17, q4]        # tie_word_embeddings=true expected; asserted at download

@@ -1,0 +1,60 @@
+# Per-experiment condition grids: the single source of truth for queue generation.
+#
+# 2 x 80 GB H100 profile. Reductions vs the 4-GPU spec plan (each one is a spec §11 cut-list item
+# or an approved model swap; recorded in NOTES.md): E1 skips the q32 q8_0/q3_k_m evals and
+# Belebele-en outside q4/q8/q32; E2 runs q17+q4 with the second seed only on q4; E4 drops
+# concurrency 64; E5 drops stage 3 (8B transfer). Needle trials and the 64K KL text are unchanged.
+gpus: 2
+gpu_plan:             # static assignment, balanced by size-weighted load: GPU 0 = q32 (+E4-32B, demo,
+  models: {q32: 0, q14: 1, q8: 1, q4: 1, q17: 1, q06: 1}   # E6 KV), GPU 1 = everything else
+  roles: {e0: 1, e2: 1, e5: 1, e6_kv: 0, e6_head: 1, demo: 0}
+E0:
+  model: q8
+  noise_tasks: [belebele_tr, arc_tr]
+  kl_path_quants: [q4_k_m, q2_k]
+  monotonic_quants: [q8_0, q4_k_m, q3_k_m, q2_k]
+E1:
+  calib: tr
+  seed: s0
+  tasks_all: [belebele_tr, belebele_en, arc_tr]
+  tasks_big: [gpqa_tr]        # only for models in tasks.yaml gpqa_models
+  belebele_en_models: [q4, q8, q32]    # spec §11 cut 3: Belebele-en only here
+  skip_eval: {q32: [q8_0, q3_k_m]}     # spec §11 cut 1: no accuracy eval (KL and E4 speed stay)
+E2:
+  models: [q17, q4]
+  methods: [gptq, q3_k_m]
+  calibs: [en, tr, mix]
+  seeds: [s0, s1]
+  s1_models: [q4]             # spec §11 cut 2: second seed only on the larger E2 model
+  controls: [rtn, q3_k_m__none]
+  tasks: [belebele_tr, arc_tr, belebele_en, arc_en]
+E4:
+  models: [q8, q32]
+  prefill: 512
+  decode: 256
+  repeats: 3
+  concurrency: [1, 4, 16]       # 32B only, vLLM engines (spec §11 cut 5: no 64)
+E5:
+  map_model: q4
+  layers: 36
+  tensor_types: [attn_q, attn_k, attn_v, attn_output, ffn_gate, ffn_up, ffn_down]
+  map_tokens: 20480
+  eval_tasks: [belebele_tr, arc_tr]
+  calib_ref: {model: q4, quant: q3_k_m, calib: tr, seed: s0}   # uniform baseline reused from E1
+  tier_rule: {n3_frac: 0.40, n4_per_n6: 2.0, size_tol: 0.01}
+  stage3: false                 # spec §11 cut 4: no 8B transfer stage
+  stage3_model: q8
+E6:
+  kv_model: q8
+  kv_base_quant: q8_0
+  kv_types: [f16, q8_0, q4_0]
+  contexts: [4096, 16384, 32768]
+  depths: [5, 25, 50, 75, 95]
+  n_trials: 5
+  head_models: [q06, q8]
+  head_base_quant: q4_k_m
+  head_types: [q8_0, q4_k]
+demo:
+  hook_model: q32
+  hook_quants: [q4_k_m, q3_k_m, q2_k]
+  max_tokens: 256

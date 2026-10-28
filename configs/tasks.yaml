@@ -1,0 +1,9 @@
+# Benchmark registry. n is asserted by the parser (fail loudly on mismatch).
+tasks:
+  belebele_tr: {harness: belebele_tur_Latn, metric: acc,      n: 900,  lang: tr}
+  belebele_en: {harness: belebele_eng_Latn, metric: acc,      n: 900,  lang: en}
+  arc_tr:      {harness: arc_tr,            metric: acc_norm, n: 1172, lang: tr}
+  arc_en:      {harness: arc_challenge,     metric: acc_norm, n: 1172, lang: en}
+  gpqa_tr:     {harness: gpqa_tr,           metric: acc,      n: 546,  lang: tr}
+gpqa_models: [q4, q8, q14, q32]   # K-09
+tr_arc_pair: [belebele_tr, arc_tr]

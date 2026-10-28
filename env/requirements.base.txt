@@ -1,0 +1,22 @@
+# Intent only; exact lock frozen on the remote after the compat smoke (RUNBOOK step 4).
+torch
+transformers
+accelerate
+vllm
+llmcompressor
+compressed-tensors
+lm-eval
+datasets
+gguf
+numpy
+pandas
+scipy
+matplotlib
+datasketch
+safetensors
+pydantic
+pyyaml
+filelock
+huggingface_hub
+pillow
+pytest

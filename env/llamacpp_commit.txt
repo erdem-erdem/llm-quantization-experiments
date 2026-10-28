@@ -1,0 +1,3 @@
+# llama.cpp commit (ggml-org/llama.cpp) used for every published run.
+# Recorded in the run metadata of all 409 runs; bumping it means re-running E0.
+df18bee11e96557b07aa7b12db0976f3c7ac9165

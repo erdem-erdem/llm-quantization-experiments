@@ -1,0 +1,8 @@
+# Reduced-size overrides for local smoke runs (profile=smoke).
+model: q06
+calib: {samples: 4, tokens: 512}
+havadis: {eval_tokens: 8192, map_tokens: 2048}
+lm_eval_limit: 50
+e5: {layers: 2}
+needles: {contexts: [4096]}
+scheduler: {dry_run_only: true}
